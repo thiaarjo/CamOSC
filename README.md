@@ -1,100 +1,65 @@
-# CamOSC — Body Tracking + OSC para ImgFootball ⚽
+# Ping Pong Game using Hand Gestures  
 
-Sistema de captura de movimentos corporais via câmera com envio de coordenadas em tempo real via **OSC (Open Sound Control)**.
+## Features  
+- Real-time hand tracking for paddle control  
+- Two-player gameplay with virtual paddles  
+- Collision detection and scoring system  
+- Game-over screen with winner announcement  
+- Restart (`r`) or quit (`q`) using keyboard shortcuts  
 
-Foco na detecção detalhada de **pernas e pés** (com suporte a sapatos), ideal para projetos de futebol interativo.
+## Installation  
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/DishaS08/PingPong-HandGesture.git
+   ```
+2. Install dependencies:  
+   ```bash
+   pip install opencv-python mediapipe cvzone numpy
+   ```
+3. Run the game:  
+   ```bash
+   python ping_pong.py
+   ```
 
-## 🎯 Funcionalidades
+## How to Play  
+- Move hands to control paddles  
+- Hit the ball to score points  
+- Press `r` to restart, `q` to quit
 
-- **Detecção de corpo inteiro** com foco detalhado da cintura para baixo
-- **Identificação precisa de lados**: 🔴 Vermelho = Direito | 🔵 Azul = Esquerdo
-- **Confirmação de lados via mãos** usando detector de mãos do MediaPipe
-- **Zona do sapato**: área expandida de detecção que compensa o uso de calçados
-- **Detecção de chute**: identifica movimentos rápidos dos pés automaticamente
-- **Ângulo dos joelhos**: calcula flexão em tempo real (útil para mecânica de chute)
-- **Envio OSC constante**: ~22 mensagens por frame, todos os pontos do corpo
-- **Suavização de coordenadas**: filtro configurável para reduzir tremulação
-- **Logging para arquivo**: grava sessões em JSON para replay e debug
-- **Configuração centralizada**: tudo ajustável pelo `config.ini`
 
-## 📋 Requisitos
 
-- Python 3.11 (recomendado)
-- Webcam USB ou integrada
+Here’s how you can structure your README with the images and short descriptions:  
 
-## ⚡ Instalação Rápida
+---
 
-```bash
-# Crie um ambiente virtual com Python 3.11
-py -3.11 -m venv venv
+### Images and Their Placement  
 
-# Ative o ambiente
-venv\Scripts\activate         # Windows
-# source venv/bin/activate    # Linux/Mac
+1. Background Image (`Background.png`)
+   Sets the visual context of the game, enhancing clarity and immersion.
 
-# Instale as dependências
-pip install opencv-python mediapipe==0.10.9 cvzone numpy python-osc
-```
 
-> ⚠️ **Importante**: Use `mediapipe==0.10.9`. Versões mais recentes (0.10.30+) removeram o módulo `solutions` e são incompatíveis com o `cvzone`.
+   ![image](https://github.com/user-attachments/assets/167e7bc5-d29c-4ca7-afc8-4d2b67df2760)
 
-## 🚀 Como Usar
 
-### 1. Configurar
-Edite o `config.ini` para ajustar câmera, porta OSC, sensibilidade, etc.
+2. Ball Image (`Ball.png`)  
+   Represents the moving object players interact with, updating dynamically during gameplay.
+   
 
-### 2. Rodar o Body Tracker
-```bash
-python test_body.py
-```
+![image](https://github.com/user-attachments/assets/b4317264-6684-4cf3-9687-dffd49ffbec2)
 
-### 3. (Opcional) Testar as mensagens OSC
-Abra **dois terminais**:
-```bash
-# Terminal 1 — Receptor de teste
-python osc_receiver_test.py
 
-# Terminal 2 — Body Tracker
-python test_body.py
-```
+3. Left Paddle (`bat1.png`) & Right Paddle (`bat2.png`)
+   Controlled by hand gestures, these paddles move vertically to hit the ball.
 
-O receptor mostra todas as mensagens OSC chegando em tempo real.
+![image](https://github.com/user-attachments/assets/678d0cb0-9086-4b47-a14d-a11d4d321d67)                   ![image](https://github.com/user-attachments/assets/048308af-e954-4c6b-8d06-7e371ae6edf4)
 
-## 📁 Estrutura do Projeto
 
-| Arquivo | Descrição |
-|---|---|
-| `test_body.py` | Script principal — captura + detecção + envio OSC |
-| `config.ini` | Configurações (câmera, OSC, detecção, suavização, logging) |
-| `osc_receiver_test.py` | Receptor de teste para validar mensagens OSC |
-| `osc_protocol.md` | Documentação completa do protocolo OSC |
-| `test_camera.py` | Script auxiliar para testar detecção de mãos |
-| `find_camera.py` | Utilitário para descobrir o índice da sua câmera |
 
-## 📡 Protocolo OSC (Resumo)
+4. Game Over Image (`gameOver.png`)
+   Displayed when the game ends, summarizing the final score.
 
-Coordenadas normalizadas (0.0 a 1.0). Documentação completa em [`osc_protocol.md`](osc_protocol.md).
+![image](https://github.com/user-attachments/assets/904086b7-f212-49ec-b20f-28ad070f6e2c)
 
-| Endereço | Valores | Descrição |
-|---|---|---|
-| `/body/direito/pe` | `x y vis` | Ponta do pé direito |
-| `/body/esquerdo/pe` | `x y vis` | Ponta do pé esquerdo |
-| `/body/direito/joelho_angulo` | `graus` | Ângulo do joelho direito |
-| `/body/direito/chute` | `0 ou 1` | Flag de chute detectado |
-| `/body/direito/sapato_centro` | `x y` | Centro da zona do sapato |
-| `/body/lado_confirmado` | `1/0/-1` | Status de confirmação dos lados |
 
-*(+ 16 outros endereços para todos os pontos do corpo)*
-
-## 🎮 Controles
-
-- **`q`** — Fechar o programa
-- Mostre as **duas mãos** no início para confirmar os lados (esquerdo/direito)
-
-## 👥 Equipe
-
-Desenvolvido para o projeto **ImgFootball**.
-
-## 📄 Licença
-
-Open-source. Modifique e melhore conforme necessário.
+## License  
+Open-source project. Modify and improve as needed.  

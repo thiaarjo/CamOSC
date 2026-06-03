@@ -36,6 +36,7 @@ POSE_TRACK_CONF = config.getfloat("detection", "pose_tracking_confidence", fallb
 POSE_COMPLEXITY = config.getint("detection", "pose_model_complexity", fallback=2)
 HAND_DET_CONF = config.getfloat("detection", "hand_detection_confidence", fallback=0.6)
 KICK_THRESHOLD = config.getfloat("detection", "kick_speed_threshold", fallback=15)
+KICK_COOLDOWN = config.getfloat("detection", "kick_cooldown", fallback=0.5)
 
 SMOOTH_ENABLED = config.getboolean("smoothing", "enabled", fallback=True)
 SMOOTH_FACTOR = config.getfloat("smoothing", "factor", fallback=0.4)
@@ -201,6 +202,7 @@ def cor_lado(nome):
 
 confirmed_side = None
 prev_foot_pos = {"E": None, "D": None}
+last_kick_time = {"E": 0.0, "D": 0.0}
 frame_count = 0
 fps_start_time = time.time()
 fps = 0
@@ -292,12 +294,18 @@ while True:
                 shoe_coords = smoother.smooth(f"/body/{side}/sapato_centro", [round(foot_cx / w, 4), round(foot_cy / h, 4)])
                 osc_client.send_message(f"/body/{side}/sapato_centro", shoe_coords)
 
-                is_kick = 1 if speed > KICK_THRESHOLD else 0
-                osc_client.send_message(f"/body/{side}/chute", [is_kick])
-                if is_kick == 1:
+                is_kick = 0
+                current_time = time.time()
+                if speed > KICK_THRESHOLD:
+                    if (current_time - last_kick_time[side_key]) > KICK_COOLDOWN:
+                        is_kick = 1
+                        last_kick_time[side_key] = current_time
+                    
                     cor_mov = COR_DIREITO if side_key == "D" else COR_ESQUERDO
                     cv2.putText(img, "CHUTE!", (foot_cx - 30, foot_cy + 40),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, cor_mov, 2)
+                                
+                osc_client.send_message(f"/body/{side}/chute", [is_kick])
 
         side_status = 1 if confirmed_side == "normal" else (0 if confirmed_side == "invertido" else -1)
         osc_client.send_message("/body/lado_confirmado", [side_status])
